@@ -1,5 +1,25 @@
+<?php
+if(isset($_POST['username'])){
+    include('conexiondb.php');
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $sql="SELECT * FROM usuarios WHERE username= :username";
+    $stm->bindParam(param: ":username", var: $username);
+    $stm->execute();
+    $row=$stm->fetch(mode: PDO::FETCH_ASSOC);
+    if($row){
+        var_dump(value: $row);
+        exit();
+    }else{
+        var_dump(value: $row);
+        exit();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
