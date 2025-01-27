@@ -1,18 +1,23 @@
 <?php
-if(isset($_POST['username'])){
-    include('conexiondb.php');
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $sql="SELECT * FROM usuarios WHERE username= :username";
-    $stm->bindParam(param: ":username", var: $username);
+if (isset($_POST["username"])) {
+    include("conexiondb.php");
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $sql = "SELECT * FROM usuarios WHERE username = :username";
+    $stm=$conexion->prepare($sql);
+    $stm->bindParam(":username", $username);
     $stm->execute();
-    $row=$stm->fetch(mode: PDO::FETCH_ASSOC);
+    $row=$stm->fetch(PDO::FETCH_ASSOC);
     if($row){
-        var_dump(value: $row);
-        exit();
+       if(password_verify($password, $row["password"])){
+           session_start();
+           $_SESSION["username"] = $username;
+           header("Location: tienda.php");
+       }else{
+           $error = "Usuario o contraseña incorrectos";
+       }
     }else{
-        var_dump(value: $row);
-        exit();
+        $error = "Usuario o contraseña incorrectos";
     }
 }
 ?>
@@ -32,6 +37,8 @@ if(isset($_POST['username'])){
         <label for="password">Contraseña</label>
         <input type="password" name="password" id="password" required placeholder="password">
         <input type="submit" value="Iniciar sesión">
+        <?php if(isset($error)){echo $error;}?>
+    </form>
     
 </body>
 </html>
